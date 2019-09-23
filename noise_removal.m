@@ -15,23 +15,36 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{retval} =} final_project (@var{input1}, @var{input2})
+## @deftypefn {} {@var{retval} =} noise_removal (@var{input1}, @var{input2})
 ##
 ## @seealso{}
 ## @end deftypefn
 
 ## Author: Carter Ithier <ithier@Carters-MacBook-Pro.local>
 ## Created: 2019-09-22
-clear all
-close all
-clc
 
-Y = "yes"
+function I = noise_removal (original, name)
+  pkg load image
+  s = size(original);
+  % convert to greyscale if colored image
+  if (length(s)) == 3
+    original = rgb2gray(original);
+  end
 
-% read in image and do noise removal
-S = dir(fullfile(Y, '*.JPG'))
-for k = 1:numel(S)
-  F = fullfile(Y, S(k).name);
-  original = imread(F);
-  I = noise_removal(original, S(k).name);
-end
+  H = -1 * ones(3, 3);
+  H(2,2) = 8;
+
+  I = conv2(original, H);
+
+  I = histeq(I);
+  I = medfilt2(I);
+
+  figure('Name', name);
+  subplot(1, 2, 1)
+  imshow(original)
+  title('Original')
+  subplot(1, 2, 2)
+  imshow(I)
+  title('New Image')
+
+endfunction

@@ -31,24 +31,27 @@ function I = processImage(original, name)
   imshow(original)
   title('Original')
 
+  %{
   I = wiener2(original, [7,7]);
   subplot(2, 2, 2)
   imshow(I)
   title('Noise Reduction Filter')
+  %}
 
-  I = histeq(I);
-  subplot(2, 2, 3)
-  imshow(I)
-  title('Histogram Equalization')
-
-  I = medfilt2(I);
-  subplot(2, 2, 4)
+  I = medfilt2(original);
+  subplot(2, 2, 2)
   imshow(I)
   title('Median Filter')
 
+  level = graythresh(I);
+  subplot(2, 2, 3)
+  I = im2bw(I);
+  imshow(I)
+  title('Thresholded Image')
+
   k = strfind(name, '.');
   file = substr(name, 1, k - 1);
-  s = strcat('Week_1/weiner2/', file, 'k_7.png');
+  s = strcat('Week_2/', file, '.png');
   saveas(h, s);
 
 endfunction

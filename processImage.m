@@ -27,66 +27,44 @@ function I = processImage(original, name)
   end
 
   h = figure('Name', name);
-  subplot(2, 2, 1)
+  subplot(2, 3, 1)
   imshow(original)
   title('Original')
 
-  %{
-  I = wiener2(original, [7,7]);
-  subplot(2, 3, 2)
-  imshow(I)
-  title('Noise Reduction Filter')
-  %}
-
   I = medfilt2(original);
-  subplot(2, 2, 2)
+  subplot(2, 3, 2)
   imshow(I)
   title('Median Filter')
 
   level = graythresh(I);
-  subplot(2, 2, 3)
+  subplot(2, 3, 3)
   I = im2bw(I);
   imshow(I)
   title('Thresholded Image')
 
-  w = figure;
-  subplot(2,3,1)
-  imshow(original)
-  title('Original')
-
-  subplot(2, 3, 2)
-  imshow(I)
-  title('Thresholded Image')
-
-  % se = strel('disk', 20, 0);
   se = strel(ones(7,7));
   Io = imopen(I, se);
-  subplot(2,3,3)
-  imshow(Io)
-  title('Erosion followed by dilation')
-
-  Ie = imerode(I, se);
-  Iobr = imreconstruct(Ie, I);
   subplot(2,3,4)
-  imshow(Iobr)
-  title('Opening by Reconstruction')
+  imshow(Io)
+  title('Erosion Followed by Dilation')
 
-  Ioc = imclose(Io, se);
-  subplot(2,3,5)
-  imshow(Ioc)
-  title('Opening-Closing')
+  % tumor = imoverlay(original, Io, 'yellow');
+  color = cat(3, original, original, original);
+  [row, col] = find(Io);
+  for i = 1:size(row)
+    color(row(i), col(i), :)= [0, 255, 0];
+  end
 
-  Iobrd = imdilate(Iobr,se);
-  Iobrcbr = imreconstruct(imcomplement(Iobrd),imcomplement(Iobr));
-  Iobrcbr = imcomplement(Iobrcbr);
-  subplot(2,3,6)
-  imshow(Iobrcbr)
-  title('Opening-Closing by Reconstruction')
+  I = color;
+
+  color(1:10, 1:10, :)
+  subplot(2, 3, 5)
+  imshow(color)
+  title('Tumor Highlighted')
 
   k = strfind(name, '.');
   file = substr(name, 1, k - 1);
-  s = strcat('Week_2/Morphological/', file, '_strel7.png');
-  % saveas(h, s);
-  saveas(w, s)
+  s = strcat('Week_2/yes_processed/', file, '.png');
+  saveas(h, s);
 
 endfunction

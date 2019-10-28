@@ -26,12 +26,13 @@ clear all
 close all
 clc
 
-Y = "yes"
+Y = "yes";
 
-% read in image and do noise removal
-S = dir(fullfile(Y, '*.JPG'))
-for k = 1:numel(S)
+% read in image and process it
+S = dir(fullfile(Y, '*.JPG'));
+% for k = 1:numel(S)
+for k = 1:1
   F = fullfile(Y, S(k).name);
   original = imread(F);
-  I = noise_removal(original, S(k).name);
+  I = processImage(original, S(k).name);
 end

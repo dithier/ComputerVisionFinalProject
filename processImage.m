@@ -50,26 +50,38 @@ function I = processImage(original, name)
   title('Thresholded Image')
 
   w = figure;
-  subplot(2, 2, 1)
+  subplot(2, 3, 1)
   imshow(I)
+  title('Thresholded Image')
 
-  D = bwdist(~I);
-  subplot(2,2,2)
-  imshow(I)
+  % se = strel('disk', 20, 0);
+  se = strel(ones(5,5));
+  Io = imopen(I, se);
+  subplot(2,3,2)
+  imshow(Io)
+  title('Erosion followed by dilation')
 
-  D = -bwdist(~I);
-  subplot(2,2,3)
-  imshow(D)
+  Ie = imerode(I, se);
+  Iobr = imreconstruct(Ie, I);
+  subplot(2,3,3)
+  imshow(Iobr)
+  title('Opening by Reconstruction')
 
-  L = watershed(D);
+  Ioc = imclose(Io, se);
+  subplot(2,3,4)
+  imshow(Ioc)
+  title('Opening-Closing')
 
-  I(L==0) = 0;
-  subplot(2,2,4)
-  imshow(I)
+  Iobrd = imdilate(Iobr,se);
+  Iobrcbr = imreconstruct(imcomplement(Iobrd),imcomplement(Iobr));
+  Iobrcbr = imcomplement(Iobrcbr);
+  subplot(2,3,5)
+  imshow(Iobrcbr)
+  title('Opening-Closing by Reconstruction')
 
   k = strfind(name, '.');
   file = substr(name, 1, k - 1);
-  s = strcat('Week_2/', file, 'watershed.png');
+  s = strcat('Week_2/', file, 'morphological_ops_strel5.png');
   % saveas(h, s);
   saveas(w, s)
 

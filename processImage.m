@@ -27,39 +27,28 @@ function I = processImage(original, name)
   end
 
   h = figure('Name', name);
-  subplot(2, 3, 1)
+  subplot(2, 2, 1)
   imshow(original)
   title('Original')
 
-  filter_size = 8;
-  M = (1/ (filter_size^2)) * ones(filter_size, filter_size);
-  avg = conv2(original, M);
-  avg = uint8(avg);
-  subplot(2, 3, 2)
-  imshow(avg)
-  title('Averaging Filter')
-
-  H = -1 * ones(3, 3);
-  H(2,2) = 8;
-
-  I = conv2(avg, H);
-  subplot(2, 3, 3)
+  I = wiener2(original, [7,7]);
+  subplot(2, 2, 2)
   imshow(I)
-  title('High Pass Filter')
+  title('Noise Reduction Filter')
 
   I = histeq(I);
-  subplot(2, 3, 4)
+  subplot(2, 2, 3)
   imshow(I)
   title('Histogram Equalization')
 
   I = medfilt2(I);
-  subplot(2, 3, 5)
+  subplot(2, 2, 4)
   imshow(I)
   title('Median Filter')
 
   k = strfind(name, '.');
   file = substr(name, 1, k - 1);
-  s = strcat('Week_1/H_1_8/', file, '_AveragingIncluded_k_8.png');
+  s = strcat('Week_1/weiner2/', file, 'k_7.png');
   saveas(h, s);
 
 endfunction

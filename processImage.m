@@ -33,7 +33,7 @@ function I = processImage(original, name)
 
   %{
   I = wiener2(original, [7,7]);
-  subplot(2, 2, 2)
+  subplot(2, 3, 2)
   imshow(I)
   title('Noise Reduction Filter')
   %}
@@ -49,9 +49,28 @@ function I = processImage(original, name)
   imshow(I)
   title('Thresholded Image')
 
+  w = figure;
+  subplot(2, 2, 1)
+  imshow(I)
+
+  D = bwdist(~I);
+  subplot(2,2,2)
+  imshow(I)
+
+  D = -bwdist(~I);
+  subplot(2,2,3)
+  imshow(D)
+
+  L = watershed(D);
+
+  I(L==0) = 0;
+  subplot(2,2,4)
+  imshow(I)
+
   k = strfind(name, '.');
   file = substr(name, 1, k - 1);
-  s = strcat('Week_2/', file, '.png');
-  saveas(h, s);
+  s = strcat('Week_2/', file, 'watershed.png');
+  % saveas(h, s);
+  saveas(w, s)
 
 endfunction

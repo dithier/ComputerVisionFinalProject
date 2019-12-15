@@ -27,12 +27,22 @@ close all
 clc
 
 Y = "yes";
+N = "no";
 
 % read in image and process it
+%{
 S = dir(fullfile(Y, '*.JPG'));
 for k = 1:numel(S)
 % for k = 1:1
   F = fullfile(Y, S(k).name);
+  original = imread(F);
+  I = processImage(original, S(k).name);
+end
+%}
+S = dir(fullfile(N, '*.jpg'))
+for k = 1:numel(S)
+% for k = 1:1
+  F = fullfile(N, S(k).name);
   original = imread(F);
   I = processImage(original, S(k).name);
 end

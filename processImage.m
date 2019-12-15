@@ -64,7 +64,7 @@ function I = processImage(original, name)
 
   k = strfind(name, '.');
   file = substr(name, 1, k - 1);
-  s = strcat('Week_2/yes_processed/', file, '.png');
+  s = strcat('Week_2/no_processed/', file, '.png');
   saveas(h, s);
 
 endfunction
